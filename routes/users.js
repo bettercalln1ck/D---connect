@@ -91,7 +91,10 @@ router.get('/logout',cors.corsWithOptions,(req,res) =>{
 	if(req.session){
 		req.session.destroy();
 		res.clearCookie('session-id');
+    res.statusCode = 200;
 //		res.redirect('/');
+  res.json({status: 'Successfully log out!'});
+
 	}
 	else{
     res.clearCookie('session-id');
