@@ -91,7 +91,7 @@ router.get('/logout',cors.corsWithOptions,(req,res) =>{
 	if(req.session){
 		req.session.destroy();
 		res.clearCookie('session-id');
-		res.redirect('/');
+//		res.redirect('/');
 	}
 	else{
     res.clearCookie('session-id');

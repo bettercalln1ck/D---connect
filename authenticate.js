@@ -38,7 +38,7 @@ exports.jwtPassport=passport.use(new JwtStrategy(opts,
 	})
 	}));
 
-exports.verifyUser=passport.authenticate('jwt',{session:false,failureRedirect: '/users/logout'});
+exports.verifyUser=passport.authenticate('jwt',{session:false});
 
 exports.verifyAdmin=(req,res,next)=>{
 	if(req.user.admin){
