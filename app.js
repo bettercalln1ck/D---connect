@@ -19,8 +19,12 @@ connect .then((db)=>{
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const uploadRouter = require('./routes/uploadRouter');
 
 var app = express();
+
+app.disable('etag');
+
 
 app.all('*', (req, res, next) => {
   if (req.secure) {
@@ -54,6 +58,7 @@ app.use(passport.session());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/imageUpload',uploadRouter);
 
 function auth(req,res,next) {
 //	console.log(req.session);
