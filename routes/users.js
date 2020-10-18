@@ -41,7 +41,7 @@ router.route('/profile/:userId')
   .then((user) =>{
       res.statusCode=200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true,user});
+      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin});
   },(err) => next(err))
     .catch((err) =>next(err));
 });
@@ -72,7 +72,7 @@ router.post('/signup',cors.corsWithOptions, (req, res, next) => {
         passport.authenticate('local')(req, res, () => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');
-          res.json({success: true, userId:user._id,username:user.username,status: 'Registration Successful!'});
+          res.json({success: true,status: 'Registration Successful!'});
         });
       });
     }
@@ -83,8 +83,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			var token=authenticate.getToken({_id:req.user._id});
 			res.statusCode=200;		
 			res.setHeader('Content-Type','application/json');
-			res.json({success: true,userId:req.user._id,username:req.user.username,firstname: req.user.firstname,lastname: req.user.lastname,
-  token:token,status:'You are successfully login!'});
+			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
 });
 
 router.get('/logout',cors.corsWithOptions,(req,res) =>{
