@@ -59,6 +59,7 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/imageUpload',uploadRouter);
+app.use('/public/images', express.static(__dirname + '/public/images'));
 
 function auth(req,res,next) {
 //	console.log(req.session);

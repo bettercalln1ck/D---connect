@@ -16,7 +16,7 @@ router.route('/verifyToken')
   .then((user) =>{
   res.statusCode=200;
   res.setHeader('Content-Type','application/json');
-  res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname});
+  res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname, imgpath:user.imgname});
   },(err) =>{
     res.redirect('/logout');
     next(err)})
