@@ -54,7 +54,7 @@ groupRouter.route('/')
             .then((group) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(group);
+                res.json({success:true,group});
             })
         }, (err) => next(err))
         .catch((err) => next(err));
