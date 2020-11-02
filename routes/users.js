@@ -5,6 +5,7 @@ var router = express.Router();
 var passport=require('passport');
 var authenticate=require('../authenticate');
 const cors = require('./cors');
+const { spawn } = require("child_process");
 
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); } )
@@ -84,6 +85,26 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			res.statusCode=200;		
 			res.setHeader('Content-Type','application/json');
 			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
+
+
+      const python = spawn("python", ["./routes/script.py"]);
+      //collects data form the script
+      python.stdout.on("data", (data) => {
+      console.log("data receiving from python script");
+      datatosend = data.toString();
+      console.log(`${datatosend}`);
+     // res.end(datatosend);
+    });
+    //close event is emitted when stdio stream of child process has been closed
+    python.on("close", (code) => {
+      console.log(`child process closes with code ${code}`);
+      //res.end(datatosend);
+     // res.end(
+     //   "Will send all the subdomain to you!" + req.params.domain + datatosend
+    //  );
+      console.log(`${datatosend}+hi`);
+    });
+
 });
 
 router.get('/logout',cors.corsWithOptions,(req,res) =>{
@@ -103,5 +124,16 @@ router.get('/logout',cors.corsWithOptions,(req,res) =>{
 	}
 
 });
+
+router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res) => {
+  if (req.user) {
+    var token = authenticate.getToken({_id: req.user._id});
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'application/json');
+    res.json({success: true, token: token, status: 'You are successfully logged in!'});
+  }
+});
+
+
 
 module.exports = router;

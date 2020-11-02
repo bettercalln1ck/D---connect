@@ -19,6 +19,7 @@ connect .then((db)=>{
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var groupRouter = require('./routes/groupRouter');
 const uploadRouter = require('./routes/uploadRouter');
 
 var app = express();
@@ -59,7 +60,9 @@ app.use(passport.session());
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/imageUpload',uploadRouter);
+app.use('/public',express.static(__dirname + '/public'));
 app.use('/public/images', express.static(__dirname + '/public/images'));
+app.use('/groups',groupRouter);
 
 function auth(req,res,next) {
 //	console.log(req.session);

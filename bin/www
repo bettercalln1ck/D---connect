@@ -9,6 +9,7 @@ var debug = require('debug')('confusionserver:server');
 var http = require('http');
 var https=require('https');
 var fs=require('fs');
+//const models=require('../models')
 
 /**
  * Get port from environment and store in Express.
@@ -36,7 +37,43 @@ var options = {
   cert: fs.readFileSync(__dirname+'/certificate.pem')
 };
 
+var users=[];
+
 var secureServer =https.createServer(options,app);
+var io = require('socket.io').listen(secureServer);
+
+io.on("connection", function (socket) {
+  console.log("User connected", socket.id);
+
+  // attach incoming listener for new user
+  socket.on("user_connected", function (username) {
+    // save in array
+    users[username] = socket.id;
+
+    // socket ID will be used to send message to individual person
+
+    // notify all connected clients
+    io.emit("user_connected", username);
+  });
+});
+/*  socket.on("join", async room => {
+    socket.join(room);
+    io.emit("roomJoined", room);
+  });
+
+  socket.on("message", (data) => {
+    Models.group.find({
+      { name: data.chatRoomName});
+    const chatRoomId = chatRoom[0].id;
+    const chatMessage = await models.ChatMessage.create({
+      chatRoomId,
+      author,
+      message: message,
+    });
+    io.emit("newMessage", chatMessage);
+  });
+});*/
+
 
 secureServer.listen(app.get('secPort'), () => {
    console.log('Server listening on port ',app.get('secPort'));
