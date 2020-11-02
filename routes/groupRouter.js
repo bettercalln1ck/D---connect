@@ -32,7 +32,7 @@ groupRouter.route('/')
         res.setHeader('Content-Type', 'application/json');
         console.log('Pages:', pageCount);
     	console.log(paginatedResults);
-        res.json(pageCount);
+        res.json({success:true,pageCount});
     }, (err) => next(err))
     .catch((err) => next(err));
 })
@@ -40,12 +40,12 @@ groupRouter.route('/')
     if (req.body != null) {
         req.body.admin = req.user._id;
         req.body.users = req.user._id;
-        Groups.findOne({"name":req.body.name})
+     /*   Groups.findOne({"name":req.body.name})
         .then((group) =>{
         err = new Error('Group already availbale by this name');
         err.status = 404;
         return next(err);
-        })  
+        })*/  
         Groups.create(req.body)
         .then((group) => {
             Groups.findById(group._id)
@@ -90,7 +90,7 @@ groupRouter.route('/:groupId')
     .then((group) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
-        res.json(group);
+        res.json({success:true,group});
     }, (err) => next(err))
     .catch((err) => next(err));
 })
@@ -118,7 +118,7 @@ groupRouter.route('/:groupId')
                 .then((group) => {
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');
-                    res.json(group); 
+                    res.json({success:true,group}); 
                 })               
             }, (err) => next(err));
         }
@@ -193,7 +193,7 @@ groupRouter.route('/joinGroup/:groupId')
             .then((group) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(group);  
+                res.json({success:true,group});  
             },(err)=>next(err))
         .catch((err)=>next(err))
         })
