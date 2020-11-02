@@ -12,18 +12,27 @@ var users = require('../models/user');
 
 groupRouter.use(bodyParser.json());
 
+var options = {
+  sort: { created_at: -1 },
+  populate: 'users',
+  populate: 'admin',
+  lean: true,
+  offset: 0, 
+  limit: 10
+};
+
 groupRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => {res.sendStatus(200); })
 .get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
-	Groups.paginate({},1,10)   
-    .populate('admin')
-    .populate('users')
+	Groups.paginate({},options)   
+ //   .populate('admin')
+ //   .populate('users')
     .then((pageCount, paginatedResults) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         console.log('Pages:', pageCount);
     	console.log(paginatedResults);
-        res.json(paginatedResults);
+        res.json(pageCount);
     }, (err) => next(err))
     .catch((err) => next(err));
 })
@@ -31,12 +40,12 @@ groupRouter.route('/')
     if (req.body != null) {
         req.body.admin = req.user._id;
         req.body.users = req.user._id;
-        Groups.findOne({"name":req.body.name})
+   /*     Groups.findOne({"name":req.body.name})
         .then((group) =>{
         err = new Error('Group already availbale by this name');
         err.status = 404;
         return next(err);
-        })  
+        })  */
         Groups.create(req.body)
         .then((group) => {
             Groups.findById(group._id)
@@ -146,12 +155,20 @@ groupRouter.route('/joinGroup/:groupId')
     Groups.findById(req.params.groupId)
     .then((group) =>{
        console.log(group.users);
-        if(req.user._id.equals(group.users.user._id))
+
+ /*      Groups.find({users:{$in:[req.user._id]}})
+       .then((gr)=>{
+         err = new Error('User already in this group');
+            err.status = 404;
+         //   next(err);
+            res.send(err);
+        });
+    /*    if(req.user._id.equals(group.users.user._id))
         {
         err = new Error('user already in this group');
         err.status = 404;
         return next(err);
-        }
+        }*/
         users.findByIdAndUpdate(req.user._id, {
             $push: {groupsjoined: {"id":req.params.groupId,"name":group.name,"description":group.description}}
         },{new:true}, function(err, result) {
