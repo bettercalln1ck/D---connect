@@ -40,12 +40,13 @@ groupRouter.route('/')
     if (req.body != null) {
         req.body.admin = req.user._id;
         req.body.users = req.user._id;
-     /*   Groups.findOne({"name":req.body.name})
+       Groups.findOne({"name":req.body.name})
         .then((group) =>{
         err = new Error('Group already availbale by this name');
         err.status = 404;
-        return next(err);
-        })*/  
+        reject(err);
+        next(err);        
+        })
         Groups.create(req.body)
         .then((group) => {
             Groups.findById(group._id)
@@ -163,12 +164,13 @@ groupRouter.route('/joinGroup/:groupId')
     .then((group) =>{
        console.log(group.users);
 
- /*      Groups.find({users:{$in:[req.user._id]}})
+    /*   Groups.find({users:{$in:[req.user._id]}})
        .then((gr)=>{
          err = new Error('User already in this group');
-            err.status = 404;
-         //   next(err);
+            err.status = 404;        
+     //   res.emit('end');
             res.send(err);
+            res.redirect('/');
         });
     /*    if(req.user._id.equals(group.users.user._id))
         {
