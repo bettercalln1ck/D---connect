@@ -40,18 +40,25 @@ groupRouter.route('/')
     if (req.body != null) {
         req.body.admin = req.user._id;
         req.body.users = req.user._id;
-   /*     Groups.findOne({"name":req.body.name})
+        Groups.findOne({"name":req.body.name})
         .then((group) =>{
         err = new Error('Group already availbale by this name');
         err.status = 404;
         return next(err);
-        })  */
+        })  
         Groups.create(req.body)
         .then((group) => {
             Groups.findById(group._id)
             .populate('admin')
             .populate('users')
             .then((group) => {
+                 users.findByIdAndUpdate(req.user._id, {
+                $push: {groupsjoined: {"id":req.params.groupId,"name":group.name,"description":group.description}}
+                },{new:true}, function(err, result) {
+                if (err) {
+                res.send(err);
+                }
+                });
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success:true,group});
