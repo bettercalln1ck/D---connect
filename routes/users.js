@@ -87,7 +87,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
 
 
-  /*    const python = spawn("python", ["./routes/script.py"]);
+    const python = spawn("python", ["./routes/script.py"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
@@ -103,7 +103,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
      //   "Will send all the subdomain to you!" + req.params.domain + datatosend
     //  );
       console.log(`${datatosend}+hi`);
-    });*/
+    });
 
 });
 
