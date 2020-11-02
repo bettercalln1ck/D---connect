@@ -146,14 +146,14 @@ groupRouter.route('/joinGroup/:groupId')
     Groups.findById(req.params.groupId)
     .then((group) =>{
        console.log(group.users);
-      /*  if(req.user._id.equals(group.users.user._id))
+        if(req.user._id.equals(group.users.user._id))
         {
         err = new Error('user already in this group');
         err.status = 404;
         return next(err);
-        }*/
+        }
         users.findByIdAndUpdate(req.user._id, {
-            $push: {groupsjoined: {"groupid":req.params.groupId}}
+            $push: {groupsjoined: {"id":req.params.groupId,"name":group.name,"description":group.description}}
         },{new:true}, function(err, result) {
             if (err) {
               res.send(err);

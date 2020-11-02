@@ -24,7 +24,9 @@ var User=new Schema({
 	},
 	groupsjoined:[
 	{
-		groupid: String
+		id: String,
+		name:String,
+		description:String
 	}],
 	facebookId: String,	
 });
