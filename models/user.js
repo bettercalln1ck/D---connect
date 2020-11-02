@@ -22,6 +22,10 @@ var User=new Schema({
 		type:Boolean,
 		default:false
 	},
+	groupsjoined:[
+	{
+		groupid: String
+	}],
 	facebookId: String,	
 });
 

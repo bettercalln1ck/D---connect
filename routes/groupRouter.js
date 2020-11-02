@@ -15,8 +15,7 @@ groupRouter.use(bodyParser.json());
 groupRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => {res.sendStatus(200); })
 .get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
-	Groups.paginate({},1,10)
-    Groups.find(req.query)
+	Groups.paginate({},1,10)   
     .populate('admin')
     .populate('users')
     .then((pageCount, paginatedResults) => {
@@ -32,6 +31,12 @@ groupRouter.route('/')
     if (req.body != null) {
         req.body.admin = req.user._id;
         req.body.users = req.user._id;
+        Groups.findOne({"name":req.body.name})
+        .then((group) =>{
+        err = new Error('Group already availbale by this name');
+        err.status = 404;
+        return next(err);
+        })  
         Groups.create(req.body)
         .then((group) => {
             Groups.findById(group._id)
@@ -141,7 +146,7 @@ groupRouter.route('/joinGroup/:groupId')
     Groups.findById(req.params.groupId)
     .then((group) =>{
         users.findByIdAndUpdate(req.user._id, {
-            $push: {groups: req.params.groupId}
+            $push: {groupsjoined: {"groupid":req.params.groupId}}
         },{new:true}, function(err, result) {
             if (err) {
               res.send(err);
