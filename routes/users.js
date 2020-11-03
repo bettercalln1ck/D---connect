@@ -111,7 +111,7 @@ router.route('/search')
 .post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next)=> {
   argument=req.body.argument;
   console.log(argument);
-      const python = spawn("python", ["./routes/script.py", "zach is king"]);
+      const python = spawn("python3", ["./routes/script.py", "zach is king"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
@@ -126,6 +126,7 @@ router.route('/search')
      // res.end(
      //   "Will send all the subdomain to you!" + req.params.domain + datatosend
     //  );
+    res.json(success: true,userId:datatosend);
       console.log(`${datatosend}+hi`);
     });
 });
