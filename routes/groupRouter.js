@@ -163,15 +163,17 @@ groupRouter.route('/joinGroup/:groupId')
     Groups.findById(req.params.groupId)
     .then((group) =>{
        console.log(group.users);
-
-    /*   Groups.find({users:{$in:[req.user._id]}})
+  /*     var ans=true;
+      Groups.find({users:{$in:[req.user._id]}})
        .then((gr)=>{
-         err = new Error('User already in this group');
-            err.status = 404;        
-     //   res.emit('end');
-            res.send(err);
-            res.redirect('/');
+         ans=false;
         });
+       if(!ans)
+       {
+        err = new Error('user already in this group');
+        err.status = 404;
+        return next(err);
+       }*/
     /*    if(req.user._id.equals(group.users.user._id))
         {
         err = new Error('user already in this group');
