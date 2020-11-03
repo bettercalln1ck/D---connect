@@ -87,7 +87,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
 
 
-    const python = spawn("python", ["./routes/script.py"]);
+    const python = spawn("python", ["./routes/script.py", "Ishan IS Agrawal"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
@@ -109,13 +109,25 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 
 router.route('/search')
 .post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next)=> {
-  User.findById(req.params.userId)
-  .then((user) =>{
-      res.statusCode=200;
-      res.setHeader('Content-Type', 'application/json');
-      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined});
-  },(err) => next(err))
-    .catch((err) =>next(err));
+  argument=req.body.argument;
+  console.log(argument);
+      const python = spawn("python", ["./routes/script.py", "zach is king"]);
+      //collects data form the script
+      python.stdout.on("data", (data) => {
+      console.log("data receiving from python script");
+      datatosend = data.toString();
+      console.log(`${datatosend}`);
+     // res.end(datatosend);
+    });
+    //close event is emitted when stdio stream of child process has been closed
+    python.on("close", (code) => {
+      console.log(`child process closes with code ${code}`);
+      //res.end(datatosend);
+     // res.end(
+     //   "Will send all the subdomain to you!" + req.params.domain + datatosend
+    //  );
+      console.log(`${datatosend}+hi`);
+    });
 });
 
 
