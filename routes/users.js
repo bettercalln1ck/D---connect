@@ -87,7 +87,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
 
 
-    const python = spawn("python", ["./routes/script.py", "Ishan IS Agrawal"]);
+    const python = spawn("python", ["./routes/scripts/script.py", "Ishan IS Agrawal"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
@@ -111,7 +111,7 @@ router.route('/search')
 .post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next)=> {
   argument=req.body.argument;
   console.log(argument);
-      const python = spawn("python3", ["./routes/script.py", argument]);
+      const python = spawn("python3", ["./routes/scripts/script.py", argument]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
