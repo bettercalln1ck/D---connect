@@ -107,6 +107,18 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 
 });
 
+router.route('/search')
+.post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next)=> {
+  User.findById(req.params.userId)
+  .then((user) =>{
+      res.statusCode=200;
+      res.setHeader('Content-Type', 'application/json');
+      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined});
+  },(err) => next(err))
+    .catch((err) =>next(err));
+});
+
+
 router.get('/logout',cors.corsWithOptions,(req,res) =>{
 	if(req.session){
 		req.session.destroy();
