@@ -45,6 +45,82 @@ router.route('/profile/:userId')
       res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined});
   },(err) => next(err))
     .catch((err) =>next(err));
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
+    User.findById(req.params.userId)
+    .then((user) => {
+        if (user != null) {
+            if (!user._id.equals(req.user._id)) {
+                var err = new Error('You are not authorize to edit other people profile!');
+                err.status = 403;
+                return next(err);
+            }
+            console.log(req.body);
+      /*      for(var i=0;i<req.body.skills.length;i++)
+            {
+              var object=req.body.skills[i];
+              console.log(object);
+            }*/
+        //    console.log(req.body.experience);
+          //  req.body.admin = req.user._id;
+            User.findByIdAndUpdate(req.params.userId, {"$set":{
+                designation:req.body.designation
+            ,
+                bio:req.body.bio
+            ,
+              rating:req.body.rating
+            ,
+            // {
+              // $push:{skills:{$each: [req.body.skills]}}
+            // }
+            // ,
+            
+              skilldesc:req.body.skilldesc
+            ,
+  /*          {
+                $push:{experience:{$each:[req.body.experience]}}
+            }
+            ,{
+              $push:{reviews:{$each:[req.body.reviews]}}
+            }
+            ,*/
+            }},{ new: true })
+            .then((user) => {
+                User.findById(req.user._id)
+                .then((user) => {
+                  for(var i=0;i<req.body.skills.length;i++)
+                  {
+                    var object=req.body.skills[i];
+                    user.skills.push(object);
+                    console.log(object);
+                  }
+                   for(var i=0;i<req.body.experience.length;i++)
+                  {
+                    var object=req.body.experience[i];
+                    user.experience.push(object);
+                    console.log(object);
+                  }
+                   for(var i=0;i<req.body.reviews.length;i++)
+                  {
+                    var object=req.body.reviews[i];
+                    user.reviews.push(object);
+                    console.log(object);
+                  }
+                  user.save();
+
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success:true,user}); 
+                })               
+            }, (err) => next(err));
+        }
+        else {
+            err = new Error('User ' + req.params.userId + ' not found');
+            err.status = 404;
+            return next(err);            
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
 });
 
 //router.route('/profile/:userId')
@@ -87,6 +163,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
 
 
+
     const python = spawn("python", ["./routes/scripts/searchUsers.py", "nauki"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
@@ -103,7 +180,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
      //   "Will send all the subdomain to you!" + req.params.domain + datatosend
     //  );
       console.log(`${datatosend}+hi`);
-    });
+    });*/
 
 });
 
