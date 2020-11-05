@@ -164,7 +164,7 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 
 
 
-    const python = spawn("python", ["./routes/scripts/searchUsers.py", "nauki"]);
+ /*   const python = spawn("python", ["./routes/scripts/searchUsers.py", "nauki"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
