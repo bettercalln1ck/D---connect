@@ -163,7 +163,8 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 			res.json({success: true,userId:req.user._id,token:token,status:'You are successfully login!'});
 
 
- /*   const python = spawn("python", ["./routes/script.py", "Ishan IS Agrawal"]);
+
+    const python = spawn("python", ["./routes/scripts/searchUsers.py", "nauki"]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
@@ -187,7 +188,7 @@ router.route('/search')
 .post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next)=> {
   argument=req.body.argument;
   console.log(argument);
-      const python = spawn("python3", ["./routes/script.py", argument]);
+      const python = spawn("python", ["./routes/scripts/searchUsers.py", argument]);
       //collects data form the script
       python.stdout.on("data", (data) => {
       console.log("data receiving from python script");
@@ -203,7 +204,7 @@ router.route('/search')
      //   "Will send all the subdomain to you!" + req.params.domain + datatosend
     //  );
     console.log(`${datatosend}+hi`);
-    res.json({success: true,userId:datatosend});
+    res.json({success: true,userdata:datatosend});
    //   console.log(`${datatosend}+hi`);
     });
 });
