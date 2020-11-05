@@ -3,7 +3,24 @@ var Schema=mongoose.Schema;
 
 var passportLocalMongoose=require('passport-local-mongoose');
 
-
+var project = new Schema({
+    rating:  {
+        type: Number,
+        min: 1,
+        max: 5,
+        required: true
+    },
+    comment:  {
+        type: String,
+        required: true
+    },
+    author:  {
+        type: mongoose.Schema.Types.ObjectId,
+	ref: 'User'
+    }
+}, {
+    timestamps: true
+});
 
 var User=new Schema({
 	firstname:{
@@ -31,25 +48,26 @@ var User=new Schema({
 	,
 	designation:{
 		type:String,
-		default:false,
+		default:'',
 	},
 	bio:{
 		type:String,
-		default:false,
+		default:'',
 	},
 	rating:{
 		type:Number,
-		default:false,
+		default:0
 	},
 	skills:[{
 		skillname:String
 	}],
 	skilldesc:{
 		type:String,
-		default:false,
+		default:false
 	},
 	experience:[{
 		exp:String,
+		default:''
 	}],
 //	project:[project],
 	reviews:[{
