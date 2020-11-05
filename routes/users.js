@@ -127,7 +127,7 @@ router.route('/search')
      //   "Will send all the subdomain to you!" + req.params.domain + datatosend
     //  );
     console.log(`${datatosend}+hi`);
-    res.json({success: true,userId:datatosend});
+    res.json({success: true,userdata:datatosend});
    //   console.log(`${datatosend}+hi`);
     });
 });
