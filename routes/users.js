@@ -211,12 +211,13 @@ router.route('/search')
    // console.log(`${datatosend}+hi`);
 
     console.log(JSON.parse(datatosend));
-     User.findById(JSON.parse(datatosend)._id)
-     .then((user)=>{
+    // User.findById(JSON.parse(datatosend)._id)
+    // .then((user)=>{
+      user=JSON.parse(datatosend);
       res.statusCode = 200;
       res.setHeader('Content-Type', 'application/json');
       res.json({success: true,user});
-     })
+    // })
 
     
    //   console.log(`${datatosend}+hi`);

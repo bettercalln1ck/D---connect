@@ -50,15 +50,15 @@ for key in sortedVocab:
     xs = {}
     if sortedVocab[key] > 0:
         xs["_id"] = finalVoc[key]["_id"]
-#        xs["firstname"] = finalVoc[key]["firstname"]
-#        xs["lastname"] = finalVoc[key]["lastname"]
-#        xs["designation"] = finalVoc[key]["designation"]
-#        xs["bio"] = finalVoc[key]["bio"]
-#        xs["imgname"] = finalVoc[key]["imgname"]
-#        xs["username"] = finalVoc[key]["username"]
+        xs["firstname"] = finalVoc[key]["firstname"]
+        xs["lastname"] = finalVoc[key]["lastname"]
+        xs["designation"] = finalVoc[key]["designation"]
+        xs["bio"] = finalVoc[key]["bio"]
+        xs["imgname"] = finalVoc[key]["imgname"]
+        xs["username"] = finalVoc[key]["username"]
         xout.append(xs)
-        print(JSONEncoder().encode(xs))
+#        print(JSONEncoder().encode(xs))
 
-#print(xout)
+print(JSONEncoder().encode(xout))
 #print('"{"d":"',xout,'"}"')
 #print(json.dumps(xout))
