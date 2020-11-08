@@ -3,20 +3,20 @@ const Schema = mongoose.Schema;
 var mongoosePaginate = require('mongoose-paginate');
 var uniqueValidator = require('mongoose-unique-validator');
 
-var chatSchema = new Schema(
-  {
-    message: {
-      type: String
-    },
-    sender: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User'
-    }
-  },
-  {
-    timestamps: true
-  }
-);
+// var chatSchema = new Schema(
+//   {
+//     message: {
+//       type: String
+//     },
+//     sender: {
+//       type: mongoose.Schema.Types.ObjectId,
+//       ref: 'User'
+//     }
+//   },
+//   {
+//     timestamps: true
+//   }
+// );
 
 var groupSchema = new Schema({
     admin: {
