@@ -17,10 +17,23 @@ const postSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
+    upvote: [{
+        type: mongoose.Schema.Types.ObjectId,
+        unique: true,
+        ref: 'User'
+    }],
+    upvotecount: {
+        type: Number,
+        default: 0
+    },
     group:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Group'
     },
+    // comments:[{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'Comment'
+    // }],
     file: {
         type: String,
         default: ''
