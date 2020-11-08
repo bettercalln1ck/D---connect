@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
     },
 
     filename: (req, file, cb) => {
-        cb(null, req.user._id.toString())
+        cb(null, `${req.user.username}_${Date.now()}_${file.originalname}`)
     }
 });
 
@@ -38,7 +38,7 @@ uploadRouter.route('/')
 })
 .post(cors.corsWithOptions,authenticate.verifyUser,upload.single('imageFile'), (req, res) => {
     User.findByIdAndUpdate(req.user._id, {       
-        imgname: 'public/images'+req.user._id.toString()
+        imgname: 'public/images/'+req.file.filename
     },(err,user)=>
     {
         if(err){

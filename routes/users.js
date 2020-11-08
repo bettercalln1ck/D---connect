@@ -310,7 +310,7 @@ router.route('/:userId/reviews')
     .then((user) => {
         if (user != null) {
             for (var i = (user.comments.length -1); i >= 0; i--) {
-                dish.comments.id(dish.comments[i]._id).remove();
+                user.comments.id(dish.comments[i]._id).remove();
             }
             user.save()
             .then((user) => {
