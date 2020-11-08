@@ -373,10 +373,10 @@ router.route('/:userId/reviews/:reviewId')
                     return next(err);
                 }
             if (req.body.rating) {
-                dish.comments.id(req.params.commentId).rating = req.body.rating;
+                user.reviews.id(req.params.commentId).rating = req.body.rating;
             }
             if (req.body.comment) {
-                dish.comments.id(req.params.commentId).comment = req.body.comment;                
+                user.reviews.id(req.params.commentId).comment = req.body.comment;                
             }
           user.save()
               .then((user) => {
@@ -403,7 +403,7 @@ router.route('/:userId/reviews/:reviewId')
     .catch((err) => next(err));
 })
 .delete(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
-    User.findById(req.params.dishId)
+    User.findById(req.params.userId)
     .then((user) => {
         if (user != null && user.reviews.id(req.params.reviewsId) != null) {
         if (user.reviews.id(req.params.userId).author._id.equals(req.user._id)) {
@@ -414,7 +414,7 @@ router.route('/:userId/reviews/:reviewId')
             user.comments.id(req.params.userId).remove();
           user.save()
               .then((user) => {
-                  Users.findById(dish._id)
+                  Users.findById(user._id)
                   .populate('comments.author')
                   .then((user) => {
                         res.statusCode = 200;
