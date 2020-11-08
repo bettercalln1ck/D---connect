@@ -21,7 +21,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var groupRouter = require('./routes/groupRouter');
 const uploadRouter = require('./routes/uploadRouter');
-var postRouter = require('./routes/posts');
+//var postRouter = require('./routes/posts');
 
 var app = express();
 

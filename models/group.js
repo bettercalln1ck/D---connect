@@ -36,8 +36,9 @@ var groupSchema = new Schema({
     description:{
         type: String,
         default: ''
-    },
-    chat:[chatSchema]
+    }
+   // ,
+  //  chat:[chatSchema]
 }, {
     timestamps: true
 });
