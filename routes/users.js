@@ -6,6 +6,7 @@ var passport=require('passport');
 var authenticate=require('../authenticate');
 const cors = require('./cors');
 const { spawn } = require("child_process");
+var uniqueValidator = require('mongoose-unique-validator');
 
 
 router.options('*', cors.corsWithOptions, (req, res) => { res.sendStatus(200); } )
@@ -50,7 +51,7 @@ router.route('/profile/:userId')
     User.findById(req.params.userId)
     .then((user) => {
         if (user != null) {
-            if (!user._id.equals(req.user._id)) {
+           /* if (!user._id.equals(req.user._id)) {
                 var err = new Error('You are not authorize to edit other people profile!');
                 err.status = 403;
                 return next(err);
@@ -63,7 +64,9 @@ router.route('/profile/:userId')
             }*/
         //    console.log(req.body.experience);
           //  req.body.admin = req.user._id;
-            User.findByIdAndUpdate(req.params.userId, {"$set":{
+            User.findByIdAndUpdate(req.params.userId, 
+              {$set:req.body
+           /*   {
                 designation:req.body.designation
             ,
                 bio:req.body.bio
@@ -83,12 +86,13 @@ router.route('/profile/:userId')
             ,{
               $push:{reviews:{$each:[req.body.reviews]}}
             }
-            ,*/
-            }},{ new: true })
+            ,
+            }*/
+          },{ new: true })
             .then((user) => {
-                User.findById(req.user._id)
+                User.findById(req.params.userId)
                 .then((user) => {
-                  for(var i=0;i<req.body.skills.length;i++)
+              /*    for(var i=0;i<req.body.skills.length;i++)
                   {
                     var object=req.body.skills[i];
                     user.skills.push(object);
@@ -106,7 +110,7 @@ router.route('/profile/:userId')
                     user.reviews.push(object);
                     console.log(object);
                   }
-                  user.save();
+                  user.save();*/
 
                     res.statusCode = 200;
                     res.setHeader('Content-Type', 'application/json');

@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 var mongoosePaginate = require('mongoose-paginate');
+var uniqueValidator = require('mongoose-unique-validator');
 
 var chatSchema = new Schema(
   {
@@ -28,7 +29,9 @@ var groupSchema = new Schema({
     }],
     name: {
         type: String,
-        required: true
+        required: true,
+        unique:true,
+        dropDups: true
     },
     description:{
         type: String,
@@ -40,6 +43,7 @@ var groupSchema = new Schema({
 });
 
 groupSchema.plugin(mongoosePaginate);
+groupSchema.plugin(uniqueValidator);
 
 var Groups = mongoose.model('Group', groupSchema);
 
