@@ -7,6 +7,7 @@ const cors = require('./cors');
 const postRouter = express.Router();
 
 const Posts = require('../models/posts');
+const Groups = require('../models/group');
 
 postRouter.use(bodyParser.json());
 
@@ -34,7 +35,7 @@ postRouter.route('/')
     res.statusCode = 403;
     res.end('PUT operation not supported on /posts');
 })
-.delete(cors.corsWithOptions, authenticate.verifyUser, authenticate.verifyAdmin, (req, res, next) => {
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Posts.remove({})
     .then((resp) => {
         res.statusCode = 200;
@@ -51,6 +52,10 @@ postRouter.route('/:groupId')
     .populate('author')
     // .populate('comments')
     .then((post) => {
+        Posts.find({upvote:{$in:[req.user._id]}})
+        .then((post) => {
+            post.upvotebool = true;
+        }, (err) => next(err))
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success:true, post})
@@ -66,6 +71,10 @@ postRouter.route('/:groupId')
             Posts.findById(post._id)
             .populate('author')
             .then((post) => {
+                Posts.find({upvote:{$in:[req.user._id]}})
+                .then((post) => {
+                    post.upvotebool = true;
+                }, (err) => next(err))
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success:true, post});
@@ -83,5 +92,108 @@ postRouter.route('/:groupId')
     res.statusCode = 403;
     res.end('PUT operation not supported on /posts/:groupId');
 })
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) =>{
+    Groups.findById(req.params.groupId)
+    .then((group) => {
+        if(group != null){
+            if(!group.admin.equals(req.user._id)){
+                var err = new Error('You are not authorized to delete these posts!');
+                err.status = 403;
+                return next(err);
+            }
+            Posts.remove({'group':req.params.groupId})
+            .then((resp) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, resp})
+            }, (err) => next(err))
+            .catch((err) => next(err));
+        }
+        else{
+            err = new Error('Group '+ req.params.groupId + ' not found!');
+            err.status = 404;
+            return next(err);
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
+postRouter.route('/:groupId/:postId')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) => {
+    Posts.findById(req.params.postId)
+    .populate('author')
+    // .populate('comments')
+    .then((post) => {
+        Posts.find({upvote:{$in:[req.user._id]}})
+        .then((post) => {
+            post.upvotebool = true;
+        }, (err) => next(err))
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success:true, post})
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
+    req.statusCode=403;
+    res.end('POST operation not supported on /posts/:groupId/:postId');
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Posts.findById(req.params.postId)
+    .then((post) => {
+        if(post != null){
+            if(!post.author.equals(req.user._id)){
+                var err = new Error('You are not authorized to update this post!');
+                err.status = 403;
+                return next(err);
+            }
+            req.body.author = req.user._id;
+            Posts.findByIdAndUpdate(req.params.postId, {
+                $set: req.body
+            }, {new: true})
+            .then((post) => {
+                Posts.findById(req.params.postId)
+                .populate('author')
+                // .populate('comments')
+                .then((post) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success:true, post});
+                })
+            }, (err) => next(err))
+        }
+        else{
+            err = new Error('Post ' + req.params.postId + ' not found!');
+            err.status = 404;
+            return next(err); 
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Posts.findById(req.params.postId)
+    .then((post) =>{
+        if(post != null){
+            if(!post.author.equals(req.user._id)){
+                var err = new Error('You are not authorized to delete this post!');
+                err.status = 403;
+                return next(err);
+            }
+            Posts.findByIdAndRemove(req.params.postId)
+            .then((resp) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, resp})
+            }, (err) => next(err))
+        }
+        else{
+            err = new Error('Post ' + req.params.postId + ' not found!');
+            err.status = 404;
+            return next(err); 
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
 
 module.exports = postRouter;

@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 require('mongoose-currency').loadType(mongoose);
 const Currency = mongoose.Types.Currency;
+// var uniqueValidator = require('mongoose-unique-validator');
 
 
 const postSchema = new Schema({
@@ -20,6 +21,7 @@ const postSchema = new Schema({
     upvote: [{
         type: mongoose.Schema.Types.ObjectId,
         unique: true,
+        dropDups: true,
         ref: 'User'
     }],
     upvotecount: {
@@ -41,6 +43,8 @@ const postSchema = new Schema({
 }, {
     timestamps: true
 });
+
+// postSchema.plugin(uniqueValidator);
 
 var Posts = mongoose.model('Post', postSchema);
 
