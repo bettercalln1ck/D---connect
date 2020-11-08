@@ -43,7 +43,7 @@ router.route('/profile/:userId')
   .then((user) =>{
       res.statusCode=200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined});
+      res.json({success: true,userId:user._id,user});
   },(err) => next(err))
     .catch((err) =>next(err));
 })
