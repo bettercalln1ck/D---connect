@@ -43,7 +43,7 @@ router.route('/profile/:userId')
   .then((user) =>{
       res.statusCode=200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined,designation:user.designation,bio:user.bio,rating:user.rating,skills:user.skills,skilldesc:user.skills,experience:user.experience,reviews:user.reviews});
+      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined,designation:user.designation,bio:user.bio,rating:user.rating,skills:user.skills,skilldesc:user.skills,experience:user.experience,reviews:user.reviews,imgname:user.imgname});
   },(err) => next(err))
     .catch((err) =>next(err));
 })
@@ -256,10 +256,10 @@ router.get('/facebook/token', passport.authenticate('facebook-token'), (req, res
   }
 });
 
-router.route('/:userId/comments')
+router.route('/:userId/reviews')
 .options(cors.corsWithOptions,(req,res) => {res.sendStatus(200);})
 .get(cors.cors,(req,res,next) => {
-    Users.findById(req.params.userId)
+    User.findById(req.params.userId)
     .populate('reviews.author')
     .then((user) => {
         if (user != null) {
@@ -276,14 +276,14 @@ router.route('/:userId/comments')
     .catch((err) => next(err));
 })
 .post(cors.corsWithOptions,authenticate.verifyUser, (req, res, next) => {
-    Users.findById(req.params.userId)
+    User.findById(req.params.userId)
     .then((user) => {
         if (user != null) {
             req.body.author = req.user._id;
             user.reviews.push(req.body);
             user.save()
             .then((user) => {
-                Users.findById(dish._id)
+                User.findById(dish._id)
                 .populate('reviews.author')
                 .then((user) => {
                     res.statusCode = 200;
@@ -303,10 +303,10 @@ router.route('/:userId/comments')
 .put(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
     res.statusCode = 403;
     res.end('PUT operation not supported on /users/'
-        + req.params.userId + '/comments');
+        + req.params.userId + '/reviews');
 })
 .delete(cors.corsWithOptions,authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
-    Users.findById(req.params.dishId)
+    User.findById(req.params.dishId)
     .then((user) => {
         if (user != null) {
             for (var i = (user.comments.length -1); i >= 0; i--) {
@@ -327,25 +327,26 @@ router.route('/:userId/comments')
     }, (err) => next(err))
     .catch((err) => next(err));    
 });
-/*
-dishRouter.route('/:dishId/comments/:commentId')
+
+
+router.route('/:userId/reviews/:reviewId')
 .options(cors.corsWithOptions,(req,res) => {res.sendStatus(200);})
 .get(cors.corsWithOptions,(req,res,next) => {
-    Dishes.findById(req.params.dishId)
-    .populate('comments.author')
-    .then((dish) => {
-        if (dish != null && dish.comments.id(req.params.commentId) != null) {
+    User.findById(req.params.userId)
+    .populate('reviews.author')
+    .then((user) => {
+        if (user != null && user.reviews.id(req.params.userId) != null) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(dish.comments.id(req.params.commentId));
+            res.json(user.reviews.id(req.reviews.reviewId));
         }
-        else if (dish == null) {
-            err = new Error('Dish ' + req.params.dishId + ' not found');
+        else if (user == null) {
+            err = new Error('User ' + req.params.userId + ' not found');
             err.status = 404;
             return next(err);
         }
         else {
-            err = new Error('Comment ' + req.params.commentId + ' not found');
+            err = new Error('Comment ' + req.params.userId + ' not found');
             err.status = 404;
             return next(err);            
         }
@@ -353,20 +354,20 @@ dishRouter.route('/:dishId/comments/:commentId')
     .catch((err) => next(err));
 })
 .post(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
-  if (dish.comments.id(req.params.commentId).author._id.equals(req.user._id)) {
-                    err = new Error('You are not authorized to edit this comment');
+  if (user.reviews.id(req.params.reviewId).author._id.equals(req.user._id)) {
+                    err = new Error('You are not authorized to edit this review');
                     err.status = 403;
                     return next(err);
                 }
     res.statusCode = 403;
-    res.end('POST operation not supported on /dishes/'+ req.params.dishId
-        + '/comments/' + req.params.commentId);
+    res.end('POST operation not supported on /users/'+ req.params.userId
+        + '/reviews/' + req.params.reviewId);
 })
 .put(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
-    Dishes.findById(req.params.dishId)
-    .then((dish) => {
-        if (dish != null && dish.comments.id(req.params.commentId) != null) {
-          if (dish.comments.id(req.params.commentId).author._id.equals(req.user._id)) {
+    User.findById(req.params.userId)
+    .then((user) => {
+        if (user != null && user.comments.id(req.params.userId) != null) {
+          if (user.comments.id(req.params.userId).author._id.equals(req.user._id)) {
                     err = new Error('You are not authorized to edit this comment');
                     err.status = 403;
                     return next(err);
@@ -377,24 +378,24 @@ dishRouter.route('/:dishId/comments/:commentId')
             if (req.body.comment) {
                 dish.comments.id(req.params.commentId).comment = req.body.comment;                
             }
-          dish.save()
-              .then((dish) => {
-                  Dishes.findById(dish._id)
-                  .populate('comments.author')
-                  .then((dish) => {
+          user.save()
+              .then((user) => {
+                  Users.findById(user._id)
+                  .populate('reviews.author')
+                  .then((user) => {
                        res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json(dish);  
+                        res.json(user);  
                     })              
             }, (err) => next(err));
         }
-     else if (dish == null) {
-            err = new Error('Dish ' + req.params.dishId + ' not found');
+     else if (user == null) {
+            err = new Error('User ' + req.params.userId + ' not found');
             err.status = 404;
             return next(err);
         }
         else {
-            err = new Error('Comment ' + req.params.commentId + ' not found');
+            err = new Error('Review ' + req.params.reviewId + ' not found');
             err.status = 404;
             return next(err);            
         }
@@ -402,33 +403,33 @@ dishRouter.route('/:dishId/comments/:commentId')
     .catch((err) => next(err));
 })
 .delete(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
-    Dishes.findById(req.params.dishId)
-    .then((dish) => {
-        if (dish != null && dish.comments.id(req.params.commentId) != null) {
-        if (dish.comments.id(req.params.commentId).author._id.equals(req.user._id)) {
+    User.findById(req.params.dishId)
+    .then((user) => {
+        if (user != null && user.reviews.id(req.params.reviewsId) != null) {
+        if (user.reviews.id(req.params.userId).author._id.equals(req.user._id)) {
                     err = new Error('You are not authorized to edit this comment');
                     err.status = 403;
                     return next(err);
                 }
-            dish.comments.id(req.params.commentId).remove();
-          dish.save()
-              .then((dish) => {
-                  Dishes.findById(dish._id)
+            user.comments.id(req.params.userId).remove();
+          user.save()
+              .then((user) => {
+                  Users.findById(dish._id)
                   .populate('comments.author')
-                  .then((dish) => {
+                  .then((user) => {
                         res.statusCode = 200;
                         res.setHeader('Content-Type', 'application/json');
-                        res.json(dish);  
+                        res.json(user);  
                   })               
             }, (err) => next(err));
   }
-        else if (dish == null) {
-            err = new Error('Dish ' + req.params.dishId + ' not found');
+        else if (user == null) {
+            err = new Error('User ' + req.params.userId + ' not found');
             err.status = 404;
             return next(err);
         }
         else {
-            err = new Error('Comment ' + req.params.commentId + ' not found');
+            err = new Error('Comment ' + req.params.userId + ' not found');
             err.status = 404;
             return next(err);            
         }
@@ -436,6 +437,5 @@ dishRouter.route('/:dishId/comments/:commentId')
     .catch((err) => next(err));
 });
 
-*/
 
 module.exports = router;
