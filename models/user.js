@@ -86,10 +86,10 @@ var User=new Schema({
 		type:String,
 		default:false
 	},
-	experience:[{
-		exp:String,
-		default:''
-	}],
+	experience:{"type": "array",
+   "contains": {
+     "type": "number"
+   }},
 //	project:[project],
 	reviews:[reviewSchema],
 	facebookId: String,	
