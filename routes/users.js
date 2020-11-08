@@ -283,7 +283,7 @@ router.route('/:userId/reviews')
             user.reviews.push(req.body);
             user.save()
             .then((user) => {
-                User.findById(dish._id)
+                User.findById(user._id)
                 .populate('reviews.author')
                 .then((user) => {
                     res.statusCode = 200;

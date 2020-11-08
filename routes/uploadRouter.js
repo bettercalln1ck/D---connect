@@ -38,7 +38,7 @@ uploadRouter.route('/')
 })
 .post(cors.corsWithOptions,authenticate.verifyUser,upload.single('imageFile'), (req, res) => {
     User.findByIdAndUpdate(req.user._id, {       
-        imgname: '/public/images'+req.user._id.toString()
+        imgname: 'public/images'+req.user._id.toString()
     },(err,user)=>
     {
         if(err){
