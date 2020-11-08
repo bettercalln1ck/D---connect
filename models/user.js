@@ -22,6 +22,26 @@ var project = new Schema({
     timestamps: true
 });
 
+var reviewSchema = new Schema({
+    rating:  {
+        type: Number,
+        min: 1,
+        max: 5,
+        required: true
+    },
+    review:  {
+        type: String,
+        required: true
+    },
+    author:  {
+        type: mongoose.Schema.Types.ObjectId,
+	ref: 'User'
+    }
+}, {
+    timestamps: true
+});
+
+
 var User=new Schema({
 	firstname:{
 		type:String,
@@ -58,9 +78,10 @@ var User=new Schema({
 		type:Number,
 		default:0
 	},
-	skills:[{
-		skillname:String
-	}],
+	skills: {"type": "array",
+   "contains": {
+     "type": "number"
+   }},
 	skilldesc:{
 		type:String,
 		default:false
@@ -70,13 +91,7 @@ var User=new Schema({
 		default:''
 	}],
 //	project:[project],
-	reviews:[{
-		authorid:String,
-		review:String,
-		rating:Number
-	},{
-		timestamps: true
-	}],
+	reviews:[reviewSchema],
 	facebookId: String,	
 //	posts:[posts]
 	},
