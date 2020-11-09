@@ -336,10 +336,11 @@ router.route('/:userId/reviews/:reviewId')
     User.findById(req.params.userId)
     .populate('reviews.author')
     .then((user) => {
-        if (user != null && user.reviews.id(req.params.userId) != null) {
+     // console
+        if (user != null && user.reviews.id(req.params.reviewId) != null) {
             res.statusCode = 200;
             res.setHeader('Content-Type', 'application/json');
-            res.json(user.reviews.id(req.reviews.reviewId));
+            res.json(user.reviews.id(req.params.reviewId));
         }
         else if (user == null) {
             err = new Error('User ' + req.params.userId + ' not found');
@@ -347,7 +348,7 @@ router.route('/:userId/reviews/:reviewId')
             return next(err);
         }
         else {
-            err = new Error('Comment ' + req.params.userId + ' not found');
+            err = new Error('Review ' + req.params.reviewId + ' not found');
             err.status = 404;
             return next(err);            
         }
@@ -366,9 +367,10 @@ router.route('/:userId/reviews/:reviewId')
 })
 .put(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
     User.findById(req.params.userId)
+    .populate('reviews.author')
     .then((user) => {
-        if (user != null && user.comments.id(req.params.userId) != null) {
-          if (user.comments.id(req.params.userId).author._id.equals(req.user._id)) {
+        if (user != null && user.reviews.id(req.params.reviewId) != null) {
+          if (user.reviews.id(req.params.reviewId).author._id.equals(req.user._id)) {
                     err = new Error('You are not authorized to edit this comment');
                     err.status = 403;
                     return next(err);
@@ -406,8 +408,8 @@ router.route('/:userId/reviews/:reviewId')
 .delete(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
     User.findById(req.params.userId)
     .then((user) => {
-        if (user != null && user.reviews.id(req.params.reviewsId) != null) {
-        if (user.reviews.id(req.params.userId).author._id.equals(req.user._id)) {
+        if (user != null && user.reviews.id(req.params.reviewId) != null) {
+        if (user.reviews.id(req.params.reviewId).author._id.equals(req.user._id)) {
                     err = new Error('You are not authorized to edit this comment');
                     err.status = 403;
                     return next(err);
