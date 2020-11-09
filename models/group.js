@@ -36,6 +36,10 @@ var groupSchema = new Schema({
     description:{
         type: String,
         default: ''
+    },
+    file: {
+        type:String,
+        default: ''
     }
    // ,
   //  chat:[chatSchema]

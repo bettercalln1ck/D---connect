@@ -12,9 +12,9 @@ const Users = require('../models/user');
 
 postRouter.use(bodyParser.json());
 
-// const postFilesRouter = require('./postFilesRouter');
+const postFileRouter = require('./postFileRouter');
 
-// postRouter.use('/postFiles', postFilesRouter);
+postRouter.use('/postFile', postFileRouter);
 
 postRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
