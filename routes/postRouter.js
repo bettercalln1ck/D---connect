@@ -51,7 +51,10 @@ postRouter.route('/group/:postId')
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) => {
     Posts.findById(req.params.postId)
     .populate('author')
-    // .populate('comments')
+    .populate({
+        path: 'comments',
+        populate:{path:'author'}
+    })
     .then((post) => {
         for(var i=0;i<post.upvote.length;i++){
             if(post.upvote[i].equals(req.user._id)){
@@ -59,6 +62,7 @@ postRouter.route('/group/:postId')
             }
         }
         post.upvotecount = post.upvote.length;
+        post.commentcount = post.comments.length;
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success:true, post})
@@ -121,7 +125,7 @@ postRouter.route('/group/:postId')
             .then((resp) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, resp})
+                res.json({success:true})
             }, (err) => next(err))
         }
         else{
@@ -188,7 +192,10 @@ postRouter.route('/:groupId')
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) =>{
     Posts.find({'group':req.params.groupId})
     .populate('author')
-    // .populate('comments')
+    .populate({
+        path: 'comments',
+        populate:{path:'author'}
+    })
     .then((post) => {
         for(var i=0;i<post.length;i++){
             for(var j=0;j<post[i].upvote.length;j++){
@@ -198,6 +205,7 @@ postRouter.route('/:groupId')
                 }
             }
             post[i].upvotecount = post[i].upvote.length;
+            post[i].commentcount = post[i].comments.length;
         }
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
@@ -247,11 +255,23 @@ postRouter.route('/:groupId')
                 err.status = 403;
                 return next(err);
             }
-            Posts.remove({'group':req.params.groupId})
+            Posts.find({'group':req.params.groupId})
             .then((resp) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success:true})
+                for(var i = 0; i < resp.length; i++){
+                    Users.findByIdAndUpdate(resp[i].author, {
+                        $pull:{posts: resp[i]._id}
+                    },{new:true}, function(err, result){
+                        if(err){
+                            res.send(err);
+                        }
+                    });
+                }
+                Posts.remove({'group':req.params.groupId})
+                .then((resp) => {
+                    res.statusCode = 200;
+                    res.setHeader('Content-Type', 'application/json');
+                    res.json({success:true})
+                }, (err) => next(err))
             }, (err) => next(err))
             .catch((err) => next(err));
         }

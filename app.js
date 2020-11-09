@@ -22,6 +22,7 @@ var usersRouter = require('./routes/users');
 var groupRouter = require('./routes/groupRouter');
 const uploadRouter = require('./routes/uploadRouter');
 var postRouter = require('./routes/postRouter');
+var commentRouter = require('./routes/commentRouter');
 
 var app = express();
 
@@ -65,6 +66,7 @@ app.use('/public',express.static(__dirname + '/public'));
 app.use('/public/images', express.static(__dirname + '/public/images'));
 app.use('/groups',groupRouter);
 app.use('/posts', postRouter);
+app.use('/comments', commentRouter);
 
 function auth(req,res,next) {
 //	console.log(req.session);
