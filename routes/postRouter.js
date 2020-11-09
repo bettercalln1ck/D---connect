@@ -46,88 +46,7 @@ postRouter.route('/')
     .catch((err) => next(err));        
 });
 
-postRouter.route('/:groupId')
-.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
-.get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) =>{
-    Posts.find({'group':req.params.groupId})
-    .populate('author')
-    // .populate('comments')
-    .then((post) => {
-        for(var i=0;i<post.length;i++){
-            for(var j=0;j<post[i].upvote.length;j++){
-                if(post[i].upvote[j].equals(req.user._id)){
-                    post[i].upvotebool = true;
-                    break;
-                }
-            }
-            post[i].upvotecount = post[i].upvote.length;
-        }
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'application/json');
-        res.json({success:true, post})
-    },(err) => next(err))
-    .catch((err) => next(err));
-})
-.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) =>{
-    if(req.body != null){
-        req.body.author = req.user._id;
-        req.body.group = req.params.groupId;
-        Posts.create(req.body)
-        .then((post) => {
-            Users.findByIdAndUpdate(req.user._id, {
-                $push:{posts: post._id}
-            },{new:true}, function(err, result){
-                if(err){
-                    res.send(err);
-                }
-            });
-            Posts.findById(post._id)
-            .populate('author')
-            .then((post) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, post});
-            })
-        }, (err) => next(err))
-        .catch((err) => next(err));
-    }
-    else{
-        err = new Error('Post not found in request body');
-        err.status = 404;
-        return next(err);
-    }
-})
-.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
-    res.statusCode = 403;
-    res.end('PUT operation not supported on /posts/:groupId');
-})
-.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) =>{
-    Groups.findById(req.params.groupId)
-    .then((group) => {
-        if(group != null){
-            if(!group.admin.equals(req.user._id)){
-                var err = new Error('You are not authorized to delete these posts!');
-                err.status = 403;
-                return next(err);
-            }
-            Posts.remove({'group':req.params.groupId})
-            .then((resp) => {
-                res.statusCode = 200;
-                res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, resp})
-            }, (err) => next(err))
-            .catch((err) => next(err));
-        }
-        else{
-            err = new Error('Group '+ req.params.groupId + ' not found!');
-            err.status = 404;
-            return next(err);
-        }
-    }, (err) => next(err))
-    .catch((err) => next(err));
-});
-
-postRouter.route('/:groupId/:postId')
+postRouter.route('/group/:postId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) => {
     Posts.findById(req.params.postId)
@@ -214,7 +133,7 @@ postRouter.route('/:groupId/:postId')
     .catch((err) => next(err));
 });
 
-postRouter.route('/:groupId/:postId/upvote')
+postRouter.route('/group/:postId/upvote')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Posts.findById(req.params.postId)
@@ -227,7 +146,7 @@ postRouter.route('/:groupId/:postId/upvote')
             .then((post) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, post})
+                res.json({success:true})
             }, (err) => next(err));
         }
         else{
@@ -237,9 +156,9 @@ postRouter.route('/:groupId/:postId/upvote')
         }
     }, (err) => next(err))
     .catch((err) => next(err));
-})
+});
 
-postRouter.route('/:groupId/:postId/cancelUpvote')
+postRouter.route('/group/:postId/cancelUpvote')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
     Posts.findById(req.params.postId)
@@ -252,7 +171,7 @@ postRouter.route('/:groupId/:postId/cancelUpvote')
             .then((post) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json({success:true, post})
+                res.json({success:true})
             }, (err) => next(err));
         }
         else{
@@ -262,6 +181,88 @@ postRouter.route('/:groupId/:postId/cancelUpvote')
         }
     }, (err) => next(err))
     .catch((err) => next(err));
+});
+
+postRouter.route('/:groupId')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) =>{
+    Posts.find({'group':req.params.groupId})
+    .populate('author')
+    // .populate('comments')
+    .then((post) => {
+        for(var i=0;i<post.length;i++){
+            for(var j=0;j<post[i].upvote.length;j++){
+                if(post[i].upvote[j].equals(req.user._id)){
+                    post[i].upvotebool = true;
+                    break;
+                }
+            }
+            post[i].upvotecount = post[i].upvote.length;
+        }
+        res.statusCode = 200;
+        res.setHeader('Content-Type', 'application/json');
+        res.json({success:true, post})
+    },(err) => next(err))
+    .catch((err) => next(err));
 })
+.post(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) =>{
+    if(req.body != null){
+        req.body.author = req.user._id;
+        req.body.group = req.params.groupId;
+        Posts.create(req.body)
+        .then((post) => {
+            Users.findByIdAndUpdate(req.user._id, {
+                $push:{posts: post._id}
+            },{new:true}, function(err, result){
+                if(err){
+                    res.send(err);
+                }
+            });
+            Posts.findById(post._id)
+            .populate('author')
+            .then((post) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true});
+            })
+        }, (err) => next(err))
+        .catch((err) => next(err));
+    }
+    else{
+        err = new Error('Post not found in request body');
+        err.status = 404;
+        return next(err);
+    }
+})
+.put(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    res.statusCode = 403;
+    res.end('PUT operation not supported on /posts/:groupId');
+})
+.delete(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) =>{
+    Groups.findById(req.params.groupId)
+    .then((group) => {
+        if(group != null){
+            if(!group.admin.equals(req.user._id)){
+                var err = new Error('You are not authorized to delete these posts!');
+                err.status = 403;
+                return next(err);
+            }
+            Posts.remove({'group':req.params.groupId})
+            .then((resp) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true})
+            }, (err) => next(err))
+            .catch((err) => next(err));
+        }
+        else{
+            err = new Error('Group '+ req.params.groupId + ' not found!');
+            err.status = 404;
+            return next(err);
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
+});
+
 
 module.exports = postRouter;
