@@ -93,6 +93,7 @@ groupRouter.route('/:groupId')
     .then((group) => {
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
+        console.log(group);
         res.json({success:true,group});
     }, (err) => next(err))
     .catch((err) => next(err));
