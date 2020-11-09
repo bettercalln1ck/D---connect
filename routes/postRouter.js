@@ -8,6 +8,7 @@ const postRouter = express.Router();
 
 const Posts = require('../models/posts');
 const Groups = require('../models/group');
+const Users = require('../models/user'); 
 
 postRouter.use(bodyParser.json());
 
@@ -52,10 +53,15 @@ postRouter.route('/:groupId')
     .populate('author')
     // .populate('comments')
     .then((post) => {
-        Posts.find({upvote:{$in:[req.user._id]}})
-        .then((post) => {
-            post.upvotebool = true;
-        }, (err) => next(err))
+        for(var i=0;i<post.length;i++){
+            for(var j=0;j<post[i].upvote.length;j++){
+                if(post[i].upvote[j].equals(req.user._id)){
+                    post[i].upvotebool = true;
+                    break;
+                }
+            }
+            post[i].upvotecount = post[i].upvote.length;
+        }
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success:true, post})
@@ -68,13 +74,16 @@ postRouter.route('/:groupId')
         req.body.group = req.params.groupId;
         Posts.create(req.body)
         .then((post) => {
+            Users.findByIdAndUpdate(req.user._id, {
+                $push:{posts: post._id}
+            },{new:true}, function(err, result){
+                if(err){
+                    res.send(err);
+                }
+            });
             Posts.findById(post._id)
             .populate('author')
             .then((post) => {
-                Posts.find({upvote:{$in:[req.user._id]}})
-                .then((post) => {
-                    post.upvotebool = true;
-                }, (err) => next(err))
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
                 res.json({success:true, post});
@@ -125,10 +134,12 @@ postRouter.route('/:groupId/:postId')
     .populate('author')
     // .populate('comments')
     .then((post) => {
-        Posts.find({upvote:{$in:[req.user._id]}})
-        .then((post) => {
-            post.upvotebool = true;
-        }, (err) => next(err))
+        for(var i=0;i<post.upvote.length;i++){
+            if(post.upvote[i].equals(req.user._id)){
+                post.upvotebool = true;
+            }
+        }
+        post.upvotecount = post.upvote.length;
         res.statusCode = 200;
         res.setHeader('Content-Type', 'application/json');
         res.json({success:true, post})
@@ -180,6 +191,13 @@ postRouter.route('/:groupId/:postId')
                 err.status = 403;
                 return next(err);
             }
+            Users.findByIdAndUpdate(req.user._id, {
+                $pull: {posts: req.params.postId}
+            }, {new:true}, function(err, result) {
+                if(err){
+                    res.send(err);
+                }
+            });
             Posts.findByIdAndRemove(req.params.postId)
             .then((resp) => {
                 res.statusCode = 200;
@@ -195,5 +213,55 @@ postRouter.route('/:groupId/:postId')
     }, (err) => next(err))
     .catch((err) => next(err));
 });
+
+postRouter.route('/:groupId/:postId/upvote')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Posts.findById(req.params.postId)
+    .then((post) =>{
+        if(post != null){
+            Posts.findByIdAndUpdate(req.params.postId, {
+                $push: {upvote: req.user._id},
+                $inc: {upvotecount: 1}
+            },{new:true})
+            .then((post) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, post})
+            }, (err) => next(err));
+        }
+        else{
+            err = new Error('Post ' + req.params.postId + ' not found!');
+            err.status = 404;
+            return next(err);          
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
+
+postRouter.route('/:groupId/:postId/cancelUpvote')
+.options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
+.post(cors.corsWithOptions, authenticate.verifyUser, (req, res, next) => {
+    Posts.findById(req.params.postId)
+    .then((post) =>{
+        if(post != null){
+            Posts.findByIdAndUpdate(req.params.postId, {
+                $pull: {upvote: req.user._id},
+                $inc: {upvotecount: -1}
+            },{new:true})
+            .then((post) => {
+                res.statusCode = 200;
+                res.setHeader('Content-Type', 'application/json');
+                res.json({success:true, post})
+            }, (err) => next(err));
+        }
+        else{
+            err = new Error('Post ' + req.params.postId + ' not found!');
+            err.status = 404;
+            return next(err);          
+        }
+    }, (err) => next(err))
+    .catch((err) => next(err));
+})
 
 module.exports = postRouter;

@@ -28,6 +28,10 @@ const postSchema = new Schema({
         type: Number,
         default: 0
     },
+    upvotebool:{
+        type: Boolean,
+        default:  false
+    },
     group:{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Group'

@@ -93,7 +93,10 @@ var User=new Schema({
 //	project:[project],
 	reviews:[reviewSchema],
 	facebookId: String,	
-//	posts:[posts]
+	posts:[{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Post'
+	}]
 	},
 	{
 	timestamps: true
