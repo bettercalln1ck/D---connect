@@ -56,7 +56,7 @@ groupRouter.route('/')
             .populate('users')
             .then((group) => {
                  users.findByIdAndUpdate(req.user._id, {
-                $push: {groupsjoined: {"id":req.params.groupId,"name":group.name,"description":group.description}}
+                $push: {groupsjoined: {"id":group._id,"name":group.name,"description":group.description}}
                 },{new:true}, function(err, result) {
                 if (err) {
                 res.send(err);
