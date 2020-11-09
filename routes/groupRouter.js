@@ -8,9 +8,11 @@ var mongoosePaginate = require('mongoose-paginate');
 const Groups = require('../models/group');
 var users = require('../models/user'); 
 
-
-
 groupRouter.use(bodyParser.json());
+
+const groupFileRouter = require('./groupFileRouter');
+
+groupRouter.use('/postFile', groupFileRouter);
 
 var options = {
   sort: { created_at: -1 },

@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const authenticate = require('../authenticate');
 const multer = require('multer');
 const cors = require('./cors');
-var Posts = require('../models/posts');
+var Groups = require('../models/group');
 var path = require('path');
 
 const storage = multer.diskStorage({
@@ -25,25 +25,25 @@ const imageFileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: imageFileFilter});
 
-const postFileRouter = express.Router();
+const groupFileRouter = express.Router();
 
-postFileRouter.use(bodyParser.json());
+groupFileRouter.use(bodyParser.json());
 
-postFileRouter.route('/:postId')
+groupFileRouter.route('/:groupId')
 .options(cors.corsWithOptions,(req,res) => {res.sendStatus(200);})
 .get(cors.cors,authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
-    res.end('GET operation not supported on /posts/postFile/:postId');
+    res.end('GET operation not supported on /groups/postFile/:groupId');
 })
 .post(cors.corsWithOptions,authenticate.verifyUser,upload.single('imageFile'), (req, res) => {
-    Posts.findByIdAndUpdate(req.params.postId, {       
+    Groups.findByIdAndUpdate(req.params.groupId, {       
         file: 'public/images/'+req.file.filename
-    },(err,post)=>
+    },(err,group)=>
     {
         if(err){
             console.log(err)
         }else{
-            console.log(post)
+            console.log(group)
           //  console.log(req.file.filename)
         }
     })
@@ -56,11 +56,11 @@ postFileRouter.route('/:postId')
 })
 .put(cors.corsWithOptions,authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
-    res.end('PUT operation not supported on /posts/postFile/:postId');
+    res.end('PUT operation not supported on /groups/postFile/:groupId');
 })
 .delete(cors.corsWithOptions,authenticate.verifyUser,(req, res, next) => {
     res.statusCode = 403;
-    res.end('DELETE operation not supported on /posts/postFile/:postId');
+    res.end('DELETE operation not supported on /groups/postFile/:groupId');
 });
 
-module.exports = postFileRouter;
+module.exports = groupFileRouter;
