@@ -52,7 +52,7 @@ router.route('/profile/:userId')
     User.findById(req.params.userId)
     .then((user) => {
         if (user != null) {
-           /* if (!user._id.equals(req.user._id)) {
+            if (!user._id.equals(req.user._id)) {
                 var err = new Error('You are not authorize to edit other people profile!');
                 err.status = 403;
                 return next(err);
