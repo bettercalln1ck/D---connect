@@ -32,7 +32,8 @@ commentRouter.route('/:postId')
         Comments.create(req.body)
         .then((comment) => {
             Posts.findByIdAndUpdate(req.params.postId, {
-                $push: {comments: comment._id}
+                $push: {comments: comment._id},
+                $inc: {commentcount: 1}
             }, {new:true}, function(err, result){
                 if(err){
                     res.send(err);
@@ -66,7 +67,8 @@ commentRouter.route('/:postId')
             Comments.remove({'post' : req.params.postId})
             .then((resp) => {
                 Posts.findByIdAndUpdate(req.params.postId, {
-                    $set: {comments : [ ]}
+                    $set: {comments : [ ]},
+                    $set: {commentcount : 0}
                 }, {new:true}, function(err, result){
                     if(err){
                         res.send(err);
@@ -140,7 +142,8 @@ commentRouter.route('/:postId/:commentId')
                 return next(err);
             }
             Posts.findByIdAndUpdate(req.params.postId, {
-                $pull: {comments: req.params.commentId}
+                $pull: {comments: req.params.commentId},
+                $inc: {commentcount: -1}
             }, {new:true}, function(err, result) {
                 if(err){
                     res.send(err);
