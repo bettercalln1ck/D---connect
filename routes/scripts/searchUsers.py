@@ -15,6 +15,7 @@ stopwords = ["0o", "0s", "3a", "3b", "3d", "6b", "6o", "a", "a1", "a2", "a3", "a
 stopwords=[i.replace('"',"").strip() for i in stopwords]
 
 xy = sys.argv[1]
+# xy = "ishan"
 
 words = word_tokenize(xy.lower())
 
