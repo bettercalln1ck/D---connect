@@ -190,8 +190,6 @@ router.post('/login',cors.corsWithOptions,passport.authenticate('local'),(req,re
 });
 
 
-
-
 router.get('/logout',cors.corsWithOptions,(req,res) =>{
 	if(req.session){
 		req.session.destroy();
