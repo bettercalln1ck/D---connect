@@ -16,7 +16,7 @@ commentRouter.use(bodyParser.json());
 commentRouter.route('/:postId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) => {
-    Comments.find({'post': req.params.postId})
+    Comments.find({'post': req.params.postId}).sort({'updatedAt':-1})
     .populate('author')
     .then((comment) => {
         res.statusCode = 200;
@@ -92,7 +92,7 @@ commentRouter.route('/:postId')
 commentRouter.route('/:postId/:commentId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) => {
-    Comments.findById(req.params.commentId)
+    Comments.findById(req.params.commentId).sort({'updatedAt':-1})
     .populate('author')
     .then((comment) => {
         res.statusCode = 200;

@@ -19,7 +19,7 @@ postRouter.use('/postFile', postFileRouter);
 postRouter.route('/')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.corsWithOptions, authenticate.verifyUser, (req,res,next) => {
-    Posts.find(req.query)
+    Posts.find({}).sort({'updatedAt':-1})
     .populate('author')
     .then((posts) => {
         res.statusCode = 200;
@@ -49,7 +49,7 @@ postRouter.route('/')
 postRouter.route('/group/:postId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) => {
-    Posts.findById(req.params.postId)
+    Posts.findById(req.params.postId).sort({'updatedAt':-1})
     .populate('author')
     .populate({
         path: 'comments',
@@ -190,7 +190,7 @@ postRouter.route('/group/:postId/cancelUpvote')
 postRouter.route('/:groupId')
 .options(cors.corsWithOptions, (req, res) => { res.sendStatus(200); })
 .get(cors.corsWithOptions,authenticate.verifyUser, (req,res,next) =>{
-    Posts.find({'group':req.params.groupId})
+    Posts.find({'group':req.params.groupId}).sort({'updatedAt':-1})
     .populate('author')
     .populate({
         path: 'comments',
