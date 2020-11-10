@@ -23,6 +23,7 @@ var groupRouter = require('./routes/groupRouter');
 const uploadRouter = require('./routes/uploadRouter');
 var postRouter = require('./routes/postRouter');
 var commentRouter = require('./routes/commentRouter');
+var searchRouter = require('./routes/searchRouter');
 
 var app = express();
 
@@ -67,6 +68,7 @@ app.use('/public/images', express.static(__dirname + '/public/images'));
 app.use('/groups',groupRouter);
 app.use('/posts', postRouter);
 app.use('/comments', commentRouter);
+app.use('/search', searchRouter);
 
 function auth(req,res,next) {
 //	console.log(req.session);
