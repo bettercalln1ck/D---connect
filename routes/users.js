@@ -307,17 +307,17 @@ router.route('/:userId/reviews')
         + req.params.userId + '/reviews');
 })
 .delete(cors.corsWithOptions,authenticate.verifyUser,authenticate.verifyAdmin,(req, res, next) => {
-    User.findById(req.params.dishId)
+    User.findById(req.params.userId)
     .then((user) => {
         if (user != null) {
-            for (var i = (user.comments.length -1); i >= 0; i--) {
-                user.comments.id(dish.comments[i]._id).remove();
+            for (var i = (user.reviews.length -1); i >= 0; i--) {
+                user.reviews.id(dish.reviews[i]._id).remove();
             }
             user.save()
             .then((user) => {
                 res.statusCode = 200;
                 res.setHeader('Content-Type', 'application/json');
-                res.json(dish);                
+                res.json(user);                
             }, (err) => next(err));
         }
         else {
@@ -432,7 +432,7 @@ router.route('/:userId/reviews/:reviewId')
             return next(err);
         }
         else {
-            err = new Error('Comment ' + req.params.userId + ' not found');
+            err = new Error('Review ' + req.params.userId + ' not found');
             err.status = 404;
             return next(err);            
         }
