@@ -183,6 +183,12 @@ groupRouter.route('/joinGroup/:groupId')
         err.status = 404;
         return next(err);
         }*/
+        if(Groups.find({users:{$in:[req.user._id]}})!=null)
+        {
+        err = new Error('user already in this group');
+        err.status = 404;
+        return next(err);
+        }else{
         users.findByIdAndUpdate(req.user._id, {
             $push: {groupsjoined: {"id":req.params.groupId,"name":group.name,"description":group.description}}
         },{new:true}, function(err, result) {
@@ -204,7 +210,7 @@ groupRouter.route('/joinGroup/:groupId')
             },(err)=>next(err))
         .catch((err)=>next(err))
         })
-    }, (err) => next(err))
+    }}, (err) => next(err))
     .catch((err) => next(err));
 });
 
