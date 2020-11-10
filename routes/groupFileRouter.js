@@ -52,7 +52,7 @@ groupFileRouter.route('/:groupId')
     res.statusCode = 200;
     res.setHeader('Content-Type', 'application/json');
     console.log(req.file)
-    res.json(req.file);
+    res.json({success:true});
 })
 .put(cors.corsWithOptions,authenticate.verifyUser, (req, res, next) => {
     res.statusCode = 403;
