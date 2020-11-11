@@ -370,7 +370,7 @@ router.route('/:userId/reviews/:reviewId')
     User.findById(req.params.userId)
     .then((user) => {
         if (user != null && user.reviews.id(req.params.reviewId) != null) {
-        if (user.reviews.id(req.params.reviewId).author._id.equals(req.user._id)) {
+        if (user.reviews.id(req.params.reviewId).author._id.equals(req.user._id) || req.user.reviews.id(req.params.reviewId) != null) {
                     err = new Error('You are not authorized to edit this comment');
                     err.status = 403;
                     return next(err);
