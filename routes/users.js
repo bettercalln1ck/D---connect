@@ -41,10 +41,11 @@ router.route('/profile/:userId')
 .get(cors.corsWithOptions,authenticate.verifyUser,(req, res, next)=> {
   User.findById(req.params.userId)
   .populate('posts')
+  .populate('project')
   .then((user) =>{
       res.statusCode=200;
       res.setHeader('Content-Type', 'application/json');
-      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined,designation:user.designation,bio:user.bio,rating:user.rating,skills:user.skills,skilldesc:user.skills,experience:user.experience,reviews:user.reviews,imgname:user.imgname,posts:user.posts});
+      res.json({success: true,userId:user._id,username:user.username,firstname: user.firstname,lastname: user.lastname,admin:user.admin,groups:user.groupsjoined,designation:user.designation,bio:user.bio,rating:user.rating,skills:user.skills,skilldesc:user.skills,experience:user.experience,reviews:user.reviews,imgname:user.imgname,posts:user.posts,projects:user.project});
   },(err) => next(err))
     .catch((err) =>next(err));
 })

@@ -2,14 +2,10 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 require('mongoose-currency').loadType(mongoose);
 const Currency = mongoose.Types.Currency;
+var uniqueValidator = require('mongoose-unique-validator');
+
 
 var commentSchemapro = new Schema({
-    rating:  {
-        type: Number,
-        min: 1,
-        max: 5,
-        required: true
-    },
     comment:  {
         type: String,
         required: true
@@ -44,19 +40,13 @@ const projectSchema = new Schema({
         type: Boolean,
         default:  false
     },
-    comments:[commentSchemapro],
-    commentcount:{
-        type: Number,
-        default: 0
-    },
-    file: {
-        type: String,
-        default: ''
-    }
+    comments:[commentSchemapro]
 }, {
     timestamps: true
 });
 
+
+projectSchema.plugin(uniqueValidator);
 var Project = mongoose.model('Project', projectSchema);
 
 module.exports = Project;
