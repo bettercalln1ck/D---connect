@@ -25,6 +25,7 @@ var postRouter = require('./routes/postRouter');
 var commentRouter = require('./routes/commentRouter');
 var searchRouter = require('./routes/searchRouter');
 var projectRouter = require('./routes/projectRouter');
+var followRouter = require('./routes/followRouter');
 
 var app = express();
 
@@ -71,6 +72,7 @@ app.use('/posts', postRouter);
 app.use('/comments', commentRouter);
 app.use('/search', searchRouter);
 app.use('/project', projectRouter);
+app.use('/follow', followRouter);
 
 function auth(req,res,next) {
 //	console.log(req.session);
