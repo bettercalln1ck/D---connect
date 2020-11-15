@@ -90,7 +90,14 @@ var User=new Schema({
    "contains": {
      "type": "number"
    }},
-//	project:[project],
+   	project:[{
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'Project'
+	}],
+	githubusername:{
+		type:String,
+		default:''
+	},
 	reviews:[reviewSchema],
 	facebookId: String,	
 	posts:[{
