@@ -1,0 +1,21 @@
+,_id,designation,bio,skills,skilldesc,experience,username,features,num_id
+0,5fb199445a4b00472c11fd93,soft dev,mera man nhi likna ka,[{'skillname': 'nodejs'}],idntknw,[{'exp': 'something'}],ishan,"['soft', 'dev', 'mera', 'man', 'nhi', 'likna', 'idntknw', 'nodej']",0
+1,5fb1994c5a4b00472c11fd94,,,[],false,[],nauki,[],1
+2,5fb199545a4b00472c11fd95,,,[],false,[],nikhil,[],2
+3,5fb1995b5a4b00472c11fd96,,,[],false,[],vishal,[],3
+4,5fc724d14ed7bb24804607db,,,[],false,[],manisha,[],4
+5,5fc7255d427b6820a0e57b7d,,,[],false,[], jaya,[],5
+6,5fc725af42b23f09dc0c6228,,,[],false,[], jay,[],6
+7,5fc7282ec64c424174bbd219,,,[],false,[], jayaa,[],7
+8,5fc7288372683809a438d3b9,,,[],false,[], vishaal,[],8
+9,5fc728c1d5695c43e0724949,,,[],false,[], vishaaal,[],9
+10,5fc72908e4dc173cd4330f73,,,[],false,[], vishaaaal,[],10
+11,5fc729319c27ba4b88e1cadd,,,[],false,[], vishaaaaal,[],11
+12,5fc729dd6b10ea3bd821c2fe,,,[],false,[], vish,[],12
+13,5fc72c435de48e4058dfbd16,,,[],false,[], vis,[],13
+14,5fc72c625de48e4058dfbd17,,,[],false,[], vi,[],14
+15,5fc72c965de48e4058dfbd18,,,[],false,[], viss,[],15
+16,5fc72d615de48e4058dfbd19,,,[],false,[], vissa,[],16
+17,5fc72e543058ef05e8c83c2a,,,[],false,[], vissas,[],17
+18,5fc72f56f238e02c5862b087,,,[],false,[], visssaas,[],18
+19,5fc730faf238e02c5862b088,,,[],false,[], vissssaas,[],19

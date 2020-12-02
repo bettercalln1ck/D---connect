@@ -157,6 +157,12 @@ router.post('/signup',cors.corsWithOptions, (req, res, next) => {
           res.json({err});
           return ;
         }
+        const python = spawn("python", ["./routes/scripts/newUser.py", user._id, req.body.username]);
+        python.stdout.on("data", (data) => {
+          console.log("data receiving from python script");
+          datatosend = data.toString();
+          console.log(`${datatosend}`);
+        });
         passport.authenticate('local')(req, res, () => {
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/json');

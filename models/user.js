@@ -84,7 +84,7 @@ var User=new Schema({
    }},
 	skilldesc:{
 		type:String,
-		default:false
+		default:''
 	},
 	experience:{"type": "array",
    "contains": {
