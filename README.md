@@ -1,4 +1,4 @@
-# confusionserver
+# D-Connect
 
 ## users/signup    POST
 {"username":"nikrth","password":"python1234","firstname":"nikhil","lastname":"kumar"}
